@@ -2,7 +2,7 @@ from django.test import TestCase
 from selenium import webdriver
 from .forms import HashForm
 import hashlib
-from . import models
+from .models import Hash
 
 # class FunctionalTest(TestCase):
 
@@ -37,12 +37,20 @@ class UnitTest(TestCase):
         text_form = hashlib.sha256('hello'.encode('UTF-8')).hexdigest()
         self.assertEqual("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824" , text_form)
 
+
+    def save(self):
+        hash = Hash()
+        hash.text = 'hello'
+        hash.hashed = '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824'
+        hash.save()
+        return hash
+
     def test_save_hash(self):
+        hash = self.save()
+        pulled_hash = Hash.objects.get(hashed='2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824')
+        self.assertEqual(hash.text, pulled_hash.text)
 
-        Hash = hash()
-        Hash.text = 'hello'
-        Hash.hash = '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824'
-        Hash.save()
-        pulled_hash = Hash.objects.get(hash = '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824')
-        self.assertEqual(Hash.text, pulled_hash.text)
-
+    def test_viewing_hash(self):
+        hash = self.save()
+        response = self.client.get('/main/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824')
+        self.assertContains(response, 'hello')

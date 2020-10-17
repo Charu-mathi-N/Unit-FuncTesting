@@ -22,4 +22,5 @@ app_name = 'main'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name = 'home'),
+    path('main/<str:hash>', views.hashfunc, name = 'hashfunc'),
 ]
