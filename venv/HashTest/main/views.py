@@ -19,12 +19,12 @@ def home(request):
                 hash.text = text
                 hash.hashed = text_hash
                 hash.save()
-            return redirect('hashfunc', hashed = text_hash)
+            return redirect('hash', hash = text_hash)
 
     Form = forms.HashForm()
     return render(request, 'home.html', {'form' : Form})
 
-def hashfunc(request, hash):
+def hash(request, hash):
     hash = Hash.objects.get(hashed = hash)
-    return render(request, 'main/hash.html', {'hashed': hash})
+    return render(request, 'hash.html', {'hash': hash,})
 
