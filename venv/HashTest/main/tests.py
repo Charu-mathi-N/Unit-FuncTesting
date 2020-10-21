@@ -3,6 +3,7 @@ from selenium import webdriver
 from .forms import HashForm
 import hashlib
 from .models import Hash
+from django.core.exceptions import ValidationError
 
 # class FunctionalTest(TestCase):
 
@@ -11,16 +12,16 @@ from .models import Hash
 
 #     def test_homepage_exists(self):
 #         self.browser.get("http://127.0.0.1:8000/")
-#         self.assertIn("install", self.browser.page_source)
+#         self.assertIn("Enter the text to see the hash", self.browser.page_source)
 
 #     def test_hash(self):
 #         self.browser.get("http://127.0.0.1:8000/")
 #         text = self.browser.find_element_by_id('id_text')
 #         text.send_keys("hello")
-#         self.browser.find_element_by_name('submit').click()
+#         self.browser.find_element_by_name('Submit').click()
 #         self.assertIn('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824', self.browser.page_source)
 
-#     def teardown(self):
+#     def tearDown(self):
 #         self.browser.quit()
 
 class UnitTest(TestCase):
@@ -54,3 +55,10 @@ class UnitTest(TestCase):
         hash = self.save()
         response = self.client.get('/hash/2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824')
         self.assertContains(response, 'hello')
+
+    def test_bad_data_(self):
+        def bad_hash():
+            hash = Hash()
+            hash.hashed = '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824het'
+            hash.full_clean()
+        self.assertRaises(ValidationError, bad_hash)
